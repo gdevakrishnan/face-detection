@@ -5,8 +5,10 @@ import os
 from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Load environment variables
 load_dotenv()
