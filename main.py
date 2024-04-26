@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import cv2
+from bson import ObjectId
 import os
 from datetime import datetime
 from pymongo import MongoClient
@@ -167,6 +168,21 @@ def attendance():
 
     # Return JSON response
     return jsonify(response_data)
+
+# To get the attendance data
+@app.route('/', methods=['GET'])
+def get_attendance_data():
+    # Fetch all documents from the collection
+    cursor = collection.find({})
+    
+    # Convert ObjectId fields to string format
+    attendance_data = [{**doc, '_id': str(doc['_id'])} for doc in cursor]
+    
+    # Close the cursor
+    cursor.close()
+    
+    # Return the data as JSON
+    return jsonify(attendance_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
