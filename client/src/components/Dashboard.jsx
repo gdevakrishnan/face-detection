@@ -6,15 +6,21 @@ function Dashboard() {
 
   const Template = () => {
     return (
-      attendance.map((aData) => {
-        return (
-          <tr key={aData._id}>
-            <td>{aData.name}</td>
-            <td>{aData.date}</td>
-            <td>{aData.time}</td>
-          </tr>
-        );
-      })
+      <table>
+        <tbody>
+          {
+            attendance.map((aData) => {
+              return (
+                <tr key={aData._id}>
+                  <td>{aData.name}</td>
+                  <td>{aData.date}</td>
+                  <td>{aData.time}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
     );
   }
 

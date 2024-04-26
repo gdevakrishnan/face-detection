@@ -1,8 +1,52 @@
-import React from 'react'
+import React, { Fragment, useState } from 'react'
+import { giveTraining } from '../services/serviceWorker';
 
 function Train() {
+  const initialState = {
+    "name": ""
+  }
+
+  const [newPerson, setNewPerson] = useState(initialState);
+
+  function processText(inputText) {
+    let processedText = inputText.toLowerCase();
+    processedText = processedText.replace(/\s+/g, '_');
+    const specialCharactersRegex = /[^a-zA-Z0-9_]/g;
+    const hasSpecialCharacters = specialCharactersRegex.test(processedText);
+
+    return { processedText, hasSpecialCharacters };
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const check = processText(newPerson.name);
+    if (!check.hasSpecialCharacters) {
+      setNewPerson({"name": check.processedText});
+      giveTraining(newPerson)
+        .then((response) => console.log(response))
+        .catch((e) => console.log(e.message));
+    } else {
+      console.log("Please enter the name without special charachters");
+    }
+  }
   return (
-    <div>Train</div>
+    <Fragment>
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          value={newPerson.name}
+          onChange={(e) => setNewPerson({ ...newPerson, [e.target.id]: e.target.value })}
+        />
+        <input
+          type="submit"
+          value="Train"
+          onSubmit={(e) => handleSubmit(e)}
+        />
+      </form>
+      <p>* Please don't give white space for your name, instead you can use underscore for white spaces. Please don't use any special charachters</p>
+    </Fragment>
   )
 }
 

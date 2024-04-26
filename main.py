@@ -164,7 +164,6 @@ def attendance():
 
     # Construct response JSON
     response_data = {
-        "status": "success",
         "message": "Attendance recorded successfully"
     }
 
