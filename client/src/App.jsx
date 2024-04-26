@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { getAttendaceData } from './services/serviceWorker';
+import appContext from './context/appContext';
 import Router from './router/Router';
 
 function App() {
@@ -12,24 +13,17 @@ function App() {
     });
   }, [attendance, setAttendance]);
 
-  const Template = () => {
-    return (
-      attendance.map((aData) => {
-        return (
-          <tr key={aData._id}>
-            <td>{aData.name}</td>
-            <td>{aData.date}</td>
-            <td>{aData.time}</td>
-          </tr>
-        );
-      })
-    );
+  const context = {
+    attendance,
+    setAttendance
   }
 
   return (
-    <Fragment>
-      <Router />
-    </Fragment>
+    <appContext.Provider value={context}>
+      <Fragment>
+        <Router />
+      </Fragment>
+    </appContext.Provider>
   )
 }
 

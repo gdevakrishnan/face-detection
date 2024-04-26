@@ -8,8 +8,8 @@ function Navbar() {
             <h1 className="logo">Attend-ie</h1>
             <ul>
               <Link to={'/'}>Home</Link>
-              <Link to={'/train'}>Train</Link>
               <Link to={'/attendance'}>Attendance</Link>
+              <Link to={'/train'}>Train</Link>
             </ul>
         </nav>
     </Fragment>
