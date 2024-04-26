@@ -1,64 +1,75 @@
-import cv2
+from flask import Flask, jsonify, request 
+from pymongo import MongoClient
+from dotenv import load_dotenv, find_dotenv
+from datetime import datetime
 import os
+import json
+import cv2
 
-# Directory containing the dataset
-dataset_folder = 'dataset'
-flag = True
+load_dotenv(find_dotenv())
 
-# Load the pre-trained face detection model
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+# DB Connection
+MONGO_URI = os.environ.get('MONGO_URI')
+client = MongoClient(MONGO_URI)
+db = client.Deploy
+collection = db.attendance
 
-# Load the dataset
-dataset = []
+app = Flask(__name__) 
 
-for filename in os.listdir(dataset_folder):
-    if filename.endswith('.jpg'):
-        image_path = os.path.join(dataset_folder, filename)
-        dataset.append((cv2.imread(image_path), os.path.splitext(filename)[0].split("_")[0]))
+# Directory to store captured images
+output_folder = 'dataset'
 
-# Open the webcam
-cap = cv2.VideoCapture(0)
+# Create the output folder if it doesn't exist
+os.makedirs(output_folder, exist_ok=True)
 
-while True:
-    # Capture frame-by-frame
-    ret, frame = cap.read()
+def capture_images(person_name, phNo):
+    # Open the webcam
+    cap = cv2.VideoCapture(0)
 
-    # Convert the frame to grayscale
-    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # Counter for captured images
+    image_count = 0
 
-    # Detect faces in the frame
-    faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    while True:
+        # Capture frame-by-frame
+        ret, frame = cap.read()
 
-    # Draw rectangles around the detected faces and display names
-    for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-        
-        # Compare each face in the dataset
-        for (dataset_image, name) in dataset:
-            # Convert dataset image to grayscale
-            gray_dataset_image = cv2.cvtColor(dataset_image, cv2.COLOR_BGR2GRAY)
-            
-            # Detect faces in the dataset image
-            dataset_faces = face_cascade.detectMultiScale(gray_dataset_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-            
-            # Compare faces
-            for (dx, dy, dw, dh) in dataset_faces:
-                # If the detected face in the frame matches with the dataset face
-                if abs(x-dx) < 50 and abs(y-dy) < 50 and flag:
-                    print("Name:", name)
-                    flag = False
-                    break  # Print the name and exit the loop
+        # Display the frame
+        cv2.imshow('Capture Photos', frame)
 
-                if cv2.waitKey(1) & 0xFF == ord('r'):
-                    flag = True
-                    break
-    # Display the frame
-    cv2.imshow('Face Detection from Dataset', frame)
+        # Wait for 'c' key to capture an image
+        key = cv2.waitKey(1)
+        if key == ord('c'):
+            # Save the captured image
+            image_path = os.path.join(output_folder, f'{person_name}{phNo}_{image_count}.jpg')
+            cv2.imwrite(image_path, frame)
+            print(f"Image captured and saved as {image_path}")
+            image_count += 1
 
-    # Break the loop when a face is detected
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        # Break the loop when 'q' is pressed or when enough images are captured
+        if key == ord('q') or image_count >= 100:
+            break
 
-# Release the webcam and close all windows
-cap.release()
-cv2.destroyAllWindows()
+    # Release the webcam and close all windows
+    cap.release()
+    cv2.destroyAllWindows()
+
+@app.route('/', methods=['GET', 'POST']) 
+def home(): 
+    if request.method == 'GET':
+        response = json.dumps(list(collection.find()), default=str)
+        print(response)
+        return jsonify({"response": response}) 
+
+@app.route('/train', methods=['POST'])
+def train():
+    data = request.json
+    person_name = data.get('person_name')
+    phNo = data.get('phone_number')
+    if person_name and phNo:
+        capture_images(person_name, phNo)
+        return jsonify({'message': 'Images captured and saved successfully'}), 200
+    else:
+        return jsonify({'error': 'Missing person_name or phone_number in request'}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
