@@ -4,6 +4,7 @@ import appContext from './context/appContext';
 import Router from './router/Router';
 
 function App() {
+  const [msg, setMsg] = useState("");
   const [attendance, setAttendance] = useState([]);
   useEffect(() => {
     getAttendaceData().then((response) => {
@@ -15,7 +16,9 @@ function App() {
 
   const context = {
     attendance,
-    setAttendance
+    setAttendance,
+    msg,
+    setMsg
   }
 
   return (

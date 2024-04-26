@@ -4,11 +4,13 @@ import Dashboard from '../components/Dashboard';
 import Navbar from '../components/Navbar';
 import Train from '../components/Train';
 import Attendance from '../components/Attendance';
+import Message from '../components/Message';
 
 function Router() {
   return (
     <Fragment>
         <BrowserRouter>
+            <Message />
             <Navbar />
             <Routes>
                 <Route path='/' index element={<Dashboard />}/>

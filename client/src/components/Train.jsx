@@ -1,7 +1,10 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { giveTraining } from '../services/serviceWorker';
+import appContext from '../context/appContext';
 
 function Train() {
+  const { setMsg } = useContext(appContext);
+
   const initialState = {
     "name": ""
   }
@@ -23,7 +26,10 @@ function Train() {
     if (!check.hasSpecialCharacters) {
       setNewPerson({"name": check.processedText});
       giveTraining(newPerson)
-        .then((response) => console.log(response))
+        .then((response) => {
+          setMsg(response.data.message);
+          setNewPerson(initialState);
+        })
         .catch((e) => console.log(e.message));
     } else {
       console.log("Please enter the name without special charachters");

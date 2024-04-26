@@ -1,7 +1,9 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { getRecognize, putAttendance } from '../services/serviceWorker';
+import appContext from '../context/appContext';
 
 function Attendance() {
+  const { setMsg } = useContext(appContext);
   const initialState = {
     "name": "-",
     "date": "-",
@@ -25,7 +27,9 @@ function Attendance() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await putAttendance(recognizedData)
-      .then((response) => console.log(response))
+      .then((response) => {
+        setMsg(response.data.message)
+      })
       .catch((e) => console.log(e.message));
 
     setRecognizedData(initialState);
