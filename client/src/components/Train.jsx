@@ -24,7 +24,7 @@ function Train() {
     e.preventDefault();
     const check = processText(newPerson.name);
     if (!check.hasSpecialCharacters) {
-      setNewPerson({"name": check.processedText});
+      setNewPerson({ "name": check.processedText });
       giveTraining(newPerson)
         .then((response) => {
           setMsg(response.data.message);
@@ -37,21 +37,23 @@ function Train() {
   }
   return (
     <Fragment>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          value={newPerson.name}
-          onChange={(e) => setNewPerson({ ...newPerson, [e.target.id]: e.target.value })}
-        />
-        <input
-          type="submit"
-          value="Train"
-          onSubmit={(e) => handleSubmit(e)}
-        />
-      </form>
-      <p>* Please don't give white space for your name, instead you can use underscore for white spaces. Please don't use any special charachters</p>
+      <section className="page trainPage">
+        <form onSubmit={(e) => handleSubmit(e)}>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            value={newPerson.name}
+            onChange={(e) => setNewPerson({ ...newPerson, [e.target.id]: e.target.value })}
+          />
+          <input
+            type="submit"
+            value="Train"
+            onSubmit={(e) => handleSubmit(e)}
+          />
+        </form>
+        <p>* Please don't give white space for your name, instead you can use underscore for white spaces. Please don't use any special charachters</p>
+      </section>
     </Fragment>
   )
 }

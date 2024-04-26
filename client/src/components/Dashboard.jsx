@@ -7,6 +7,13 @@ function Dashboard() {
   const Template = () => {
     return (
       <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Time</th>
+          </tr>
+        </thead>
         <tbody>
           {
             attendance.map((aData) => {
@@ -26,7 +33,9 @@ function Dashboard() {
 
   return (
     <Fragment>
-      <Template />
+      <section className="page tablePage">
+        <Template />
+      </section>
     </Fragment>
   )
 }

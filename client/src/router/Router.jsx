@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import Train from '../components/Train';
 import Attendance from '../components/Attendance';
 import Message from '../components/Message';
+import Footer from '../components/Footer';
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
                 <Route path='/attendance' element={<Attendance />}/>
             </Routes>
             <Outlet />
+            <Footer />
         </BrowserRouter>
     </Fragment>
   )

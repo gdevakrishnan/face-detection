@@ -38,28 +38,32 @@ function Attendance() {
 
   return (
     <Fragment>
-      <button onClick={(e) => handleNew(e)}>New</button>
-      <table>
-        <tbody>
-          <tr>
-            <th>Name</th>
-            <td>{recognizedData.name}</td>
-          </tr>
+      <section className="page attendacePage">
+        <div className="btn">
+          <button onClick={(e) => handleNew(e)}>New</button>
+        </div>
+        <table>
+          <tbody>
+            <tr>
+              <th>Name</th>
+              <td>{recognizedData.name}</td>
+            </tr>
 
-          <tr>
-            <th>Date</th>
-            <td>{recognizedData.date}</td>
-          </tr>
+            <tr>
+              <th>Date</th>
+              <td>{recognizedData.date}</td>
+            </tr>
 
-          <tr>
-            <th>Time</th>
-            <td>{recognizedData.time}</td>
-          </tr>
-        </tbody>
-      </table>
-      {
-        (status) ? <button onClick={(e) => handleSubmit(e)}>Present</button> : null
-      }
+            <tr>
+              <th>Time</th>
+              <td>{recognizedData.time}</td>
+            </tr>
+          </tbody>
+        </table>
+        {
+          (status) ? <button onClick={(e) => handleSubmit(e)}>Present</button> : null
+        }
+      </section>
     </Fragment>
   )
 }
