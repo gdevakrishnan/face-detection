@@ -1,1 +1,5 @@
-opencv-python
+flask
+dotenv
+numpy
+opencv_contrib_python
+pymongo
