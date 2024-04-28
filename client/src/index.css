@@ -167,6 +167,7 @@ body {
 .tablePage {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
 }
 
 .tablePage table {
@@ -195,22 +196,22 @@ body {
     padding: 10px 20px;
 }
 
-/* Attendace Page */
-.attendacePage {
+/* attendance Page */
+.attendancePage {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.attendacePage .btn {
+.attendancePage .btn {
     width: 40vw;
     display: flex;
     justify-content: flex-end;
     margin-bottom: 20px;
 }
 
-.attendacePage .btn button,
-.attendacePage button {
+.attendancePage .btn button,
+.attendancePage button {
     background-color: #525151;
     color: #fcfcfc;
     font-size: 16px;
@@ -220,18 +221,18 @@ body {
     border-radius: 5px;
 }
 
-.attendacePage table {
+.attendancePage table {
     width: 40vw;
     border-collapse: collapse;
     margin-bottom: 40px;
 }
 
-.attendacePage table tbody tr {
+.attendancePage table tbody tr {
     height: 40px;
     border: 2px solid #525151;
 }
 
-.attendacePage table tbody tr th {
+.attendancePage table tbody tr th {
     text-align: center;
     width: 50%;
     background-color: #525151;
@@ -239,8 +240,15 @@ body {
     font-weight: 400;
 }
 
-.attendacePage table tbody tr td {
+.attendancePage table tbody tr td {
     text-align: center;
+}
+
+@media screen and (max-width: 700px) {
+    .tablePage table, 
+    .attendancePage table {
+        width: 90%;
+    }
 }
 
 /* Train Page */
@@ -286,6 +294,13 @@ body {
     line-height: 26px;
     color: orange;
     border: 2px solid orange;
+}
+
+@media screen and (max-width: 700px) {
+    .trainPage form,
+    .trainPage p {
+        width: 80%;
+    }
 }
 
 /* Footer Starts */

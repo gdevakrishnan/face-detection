@@ -34,7 +34,9 @@ function Dashboard() {
   return (
     <Fragment>
       <section className="page tablePage">
-        <Template />
+        {
+          (attendance.length > 0) ? <Template /> : <h1>No Data</h1>
+        }
       </section>
     </Fragment>
   )

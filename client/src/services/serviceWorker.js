@@ -48,3 +48,15 @@ export const giveTraining = async (newPerson) => {
         return response;
     }
 }
+
+// To detect Faces
+export const getCheckFaces = async () => {
+    try {
+        const task = await axios.get(`${BASE_URL}/check`);
+        const response = {"status": true, data: task.data};
+        return response;
+    }   catch (e) {
+        const response = {"status": false, data: e.message};
+        return response;
+    }
+}

@@ -1,47 +1,71 @@
-import React, { Fragment, useContext, useState } from 'react'
-import { getRecognize, putAttendance } from '../services/serviceWorker';
+import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
+import { getCheckFaces, getRecognize, putAttendance } from '../services/serviceWorker';
 import appContext from '../context/appContext';
+import audio from "../assets/invite.mp3"
 
 function Attendance() {
+  const [face, setFace] = useState(false);
   const { setMsg } = useContext(appContext);
   const initialState = {
     "name": "-",
     "date": "-",
     "time": "-"
-  }
+  };
   const [recognizedData, setRecognizedData] = useState(initialState);
-  const [status, setStatus] = useState(false);
+  const audioRef = useRef(null); 
 
-  const handleNew = (e) => {
-    e.preventDefault();
-    getRecognize()
-      .then((response) => {
-        setRecognizedData(response.data);
-        if (response.status) {
-          setStatus(response.status);
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        const response = await getCheckFaces();
+        if (isMounted) {
+          if (response.data.face_detected && response.status) {
+            await getRecognize()
+              .then(async (response) => {
+                if (response.status) {
+                  console.log(response.data);
+                  setRecognizedData(response.data);
+                  await putAttendance(response.data)
+                    .then((response) => {
+                      console.log(response);
+                      if (audioRef.current) {
+                        audioRef.current.play();
+                      }
+                      setMsg(response.data.message);
+                      setTimeout(() => {
+                        setMsg("")
+                        setRecognizedData(initialState)
+                      }, 2000);
+                    })
+                    .catch((e) => console.log(e.message));
+                }
+              })
+              .catch((e) => console.log(e.message));
+            setFace(true);
+          } else {
+            console.log("Not Detected");
+            setFace(false);
+          }
         }
-      })
-      .catch((e) => console.log(e.message));
-  }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setTimeout(fetchData, 15000);
+      }
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await putAttendance(recognizedData)
-      .then((response) => {
-        setMsg(response.data.message)
-      })
-      .catch((e) => console.log(e.message));
+    fetchData();
 
-    setRecognizedData(initialState);
-    setStatus(false);
-  }
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <Fragment>
-      <section className="page attendacePage">
-        <div className="btn">
-          <button onClick={(e) => handleNew(e)}>New</button>
-        </div>
+      <section className="page attendancePage">
         <table>
           <tbody>
             <tr>
@@ -60,12 +84,11 @@ function Attendance() {
             </tr>
           </tbody>
         </table>
-        {
-          (status) ? <button onClick={(e) => handleSubmit(e)}>Present</button> : null
-        }
+        <audio ref={audioRef} src={audio} />
+
       </section>
     </Fragment>
-  )
+  );
 }
 
-export default Attendance
+export default Attendance;

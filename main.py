@@ -150,7 +150,7 @@ def attendance():
 
     # If date and time are not provided, use current date and time
     if not date:
-        date = datetime.now().strftime("%Y-%m-%d")
+        date = datetime.now().strftime("%d-%m-%Y")
     if not time:
         time = datetime.now().strftime("%H:%M:%S")
 
@@ -184,6 +184,44 @@ def get_attendance_data():
     
     # Return the data as JSON
     return jsonify(attendance_data)
+
+@app.route('/check', methods=['GET'])
+def check_face():
+    # Initialize webcam
+    webcam = cv2.VideoCapture(0)
+
+    while True:
+        # Capture frame-by-frame
+        ret, frame = webcam.read()
+
+        # Convert the frame to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # Detect faces in the frame
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+
+        # Check if any face is detected
+        if len(faces) > 0:
+            # Release the webcam
+            webcam.release()
+            # Close all OpenCV windows
+            cv2.destroyAllWindows()
+            return jsonify({"face_detected": True})
+
+        # Display the resulting frame
+        cv2.imshow('Face Detection', frame)
+
+        # Break the loop when 'q' is pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # Release the webcam
+    webcam.release()
+
+    # Close all OpenCV windows
+    cv2.destroyAllWindows()
+
+    return jsonify({"face_detected": False})
 
 if __name__ == '__main__':
     app.run(debug=True)
