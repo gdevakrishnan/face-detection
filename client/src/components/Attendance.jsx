@@ -4,7 +4,6 @@ import appContext from '../context/appContext';
 import audio from "../assets/invite.mp3"
 
 function Attendance() {
-  const [face, setFace] = useState(false);
   const { setMsg } = useContext(appContext);
   const initialState = {
     "name": "-",
@@ -30,23 +29,21 @@ function Attendance() {
                   await putAttendance(response.data)
                     .then((response) => {
                       console.log(response);
-                      if (audioRef.current) {
+                      if (audioRef.current && response.data.message !== "Attendance already recorded successfully") {
                         audioRef.current.play();
                       }
                       setMsg(response.data.message);
                       setTimeout(() => {
                         setMsg("")
                         setRecognizedData(initialState)
-                      }, 2000);
+                      }, 4000);
                     })
                     .catch((e) => console.log(e.message));
                 }
               })
               .catch((e) => console.log(e.message));
-            setFace(true);
           } else {
             console.log("Not Detected");
-            setFace(false);
           }
         }
       } catch (error) {

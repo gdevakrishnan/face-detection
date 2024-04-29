@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useState } from 'react';
 import appContext from '../context/appContext';
 
 function Dashboard() {
-  const { attendance, setMsg, Msg } = useContext(appContext);
+  const { attendance } = useContext(appContext);
   const [filterDate, setFilterDate] = useState("");
   const [filteredAttendance, setFilteredAttendance] = useState([]);
   const [status, setStatus] = useState(false);
@@ -91,7 +91,7 @@ function Dashboard() {
         </form>
         {status ? <FilterTemplate /> : null}
         {
-          (attendance.length > 0) ? <Template /> : <h1 className='notFound'>No Data</h1>
+          (attendance.length > 0) ? <Template /> : <h1 className='notFound'>No Data Found</h1>
         }
       </section>
     </Fragment>

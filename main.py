@@ -154,18 +154,27 @@ def attendance():
     if not time:
         time = datetime.now().strftime("%H:%M:%S")
 
-    # Insert data into MongoDB
-    attendance_record = {
-        "name": name,
-        "date": date,
-        "time": time
-    }
-    collection.insert_one(attendance_record)
+    # Check if an attendance record for the given name and date already exists
+    existing_record = collection.find_one({"name": name, "date": date})
 
-    # Construct response JSON
-    response_data = {
-        "message": "Attendance recorded successfully"
-    }
+    if existing_record:
+        # If record already exists, return "You already present today" response
+        response_data = {
+            "message": "Attendance already recorded successfully"
+        }
+    else:
+        # Insert data into MongoDB
+        attendance_record = {
+            "name": name,
+            "date": date,
+            "time": time
+        }
+        collection.insert_one(attendance_record)
+
+        # Construct response JSON
+        response_data = {
+            "message": "Attendance recorded successfully"
+        }
 
     # Return JSON response
     return jsonify(response_data)
