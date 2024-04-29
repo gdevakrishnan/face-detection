@@ -11,8 +11,8 @@ function Router() {
   return (
     <Fragment>
         <BrowserRouter>
-            <Message />
             <Navbar />
+            <Message />
             <Routes>
                 <Route path='/' index element={<Dashboard />}/>
                 <Route path='/train' element={<Train />}/>

@@ -15,6 +15,11 @@ body {
     overflow-x: hidden;
 }
 
+.notFound {
+    color: #525151;
+    margin-bottom: 20px;
+}
+
 .page {
     min-height: 100vh;
     height: auto;
@@ -166,13 +171,52 @@ body {
 /* Dashboard Table */
 .tablePage {
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.tablePage form {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.tablePage form input {
+    padding: 4px 12px;
+}
+
+.tablePage form input:focus {
+    outline: none;
+    outline: 2px solid #2b2b2b;
+    outline-offset: 2px;
+}
+
+.tablePage form .btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 10px auto 20px;
+}
+
+.tablePage form .btn input[type="submit"], 
+.tablePage form .btn button {
+    font-size: 0.8rem;
+    background-color: #525151;
+    color: #fcfcfc;
+    padding: 4px 20px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
 }
 
 .tablePage table {
     width: 60vw;
     border-collapse: collapse;
+}
+
+.tablePage .filterTable {
+    margin-bottom: 30px;
 }
 
 .tablePage table thead {
