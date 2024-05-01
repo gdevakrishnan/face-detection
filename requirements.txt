@@ -1,5 +1,6 @@
-flask
-dotenv
+Flask
+Flask-Cord
+python-dotenv
 numpy
 opencv_contrib_python
 pymongo
