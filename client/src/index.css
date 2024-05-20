@@ -177,7 +177,7 @@ body {
 }
 
 .tablePage form {
-    width: 200px;
+    width: auto;
     display: flex;
     flex-direction: column;
 }
