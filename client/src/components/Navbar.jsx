@@ -18,6 +18,9 @@ function Navbar() {
           <li>
             <Link to={'/train'}>Train</Link>
           </li>
+          <li>
+            <Link to={'/profiles'}>Profiles</Link>
+          </li>
         </ul>
       </nav>
     </Fragment>

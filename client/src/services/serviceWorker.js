@@ -49,10 +49,34 @@ export const giveTraining = async (newPerson) => {
     }
 }
 
+// to add workers data to the database
+export const addWorker = async (newPerson) => {
+    try {
+        const task = await axios.post(`${BASE_URL}/add_worker`, newPerson);
+        const response = {"status": true, data: task.data};
+        return response;
+    }   catch (e) {
+        const response = {"status": false, data: e.message};
+        return response;
+    }
+}
+
 // To detect Faces
 export const getCheckFaces = async () => {
     try {
         const task = await axios.get(`${BASE_URL}/check`);
+        const response = {"status": true, data: task.data};
+        return response;
+    }   catch (e) {
+        const response = {"status": false, data: e.message};
+        return response;
+    }
+}
+
+// To find the workers
+export const findWorker = async (worker) => {
+    try {
+        const task = await axios.post(`${BASE_URL}/find_worker`, worker);
         const response = {"status": true, data: task.data};
         return response;
     }   catch (e) {

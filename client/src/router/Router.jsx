@@ -6,6 +6,7 @@ import Train from '../components/Train';
 import Attendance from '../components/Attendance';
 import Message from '../components/Message';
 import Footer from '../components/Footer';
+import Profiles from '../components/Profiles';
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
                 <Route path='/' index element={<Dashboard />}/>
                 <Route path='/train' element={<Train />}/>
                 <Route path='/attendance' element={<Attendance />}/>
+                <Route path='/profiles' element={<Profiles />}/>
             </Routes>
             <Outlet />
             <Footer />

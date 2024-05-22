@@ -18,6 +18,7 @@ mongo_uri = os.getenv("MONGODB_URI")
 client = MongoClient(mongo_uri)
 db = client['Deploy']
 collection = db['attendance']
+workersCollection = db['workers']
 
 # Paths
 cascade_path = "haarcascade_frontalface_default.xml"
@@ -222,6 +223,51 @@ def check_face():
     cv2.destroyAllWindows()
 
     return jsonify({"face_detected": False})
+
+@app.route('/add_worker', methods=['POST'])
+def add_worker():
+    data = request.json
+    name = data.get('name')
+    role = data.get('role')
+    age = data.get('age')
+    workingHours = data.get('workingHours')
+    salary = data.get('salary')
+
+    # Insert data into MongoDB
+    attendance_record = {
+        "name": name,
+        "role": role,
+        "age": age,
+        "workingHours": workingHours,
+        "salary": salary
+    }
+    workersCollection.insert_one(attendance_record)
+
+    # Construct response JSON
+    response_data = {
+        "message": "Worker data recorded successfully"
+    }
+
+    return jsonify(response_data)
+
+# Function to find a worker by name
+@app.route('/find_worker', methods=['post'])
+def find_worker():
+    data = request.json
+    name = data.get('name')
+
+    worker = workersCollection.find_one({"name": name})
+
+    if not worker:
+        return jsonify({"error": "Worker not found"}), 404
+
+    # Convert ObjectId to string
+    worker['_id'] = str(worker['_id'])
+    response_data = {
+        "data": worker,
+        "status": 200
+    }
+    return jsonify(response_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
