@@ -165,7 +165,33 @@ def attendance():
     if not time:
         time = datetime.now().strftime("%H:%M:%S")
 
-    # Insert data into MongoDB
+    # Check if there is already an attendance record for the worker on the given date
+    existing_record = collection.find_one({"name": name, "date": date})
+
+    # If no record exists, it's the first attendance of the day
+    if not existing_record:
+        # Fetch worker details from the workersCollection
+        worker = workersCollection.find_one({"name": name})
+
+        if worker:
+            # Extract mobile number from worker details
+            mobile = worker.get('mobile')
+            if mobile:
+                # Construct the message
+                message_body = f"Good morning, {name}, welcome to Tech Vaseegrah"
+
+                try:
+                    # Send the message using Twilio
+                    message = messenger_client.messages.create(
+                        from_=twilio_mobile_number,
+                        body=message_body,
+                        to=mobile
+                    )
+                    print(f"Message sent successfully: SID {message.sid}")
+                except TwilioRestException as e:
+                    print(f"Failed to send message: {e}")
+
+    # Insert attendance data into MongoDB
     attendance_record = {
         "name": name,
         "date": date,
@@ -180,6 +206,7 @@ def attendance():
 
     # Return JSON response
     return jsonify(response_data)
+
 
 # To get the attendance data
 @app.route('/', methods=['GET'])
