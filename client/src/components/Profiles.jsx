@@ -55,12 +55,16 @@ function Profiles() {
                                                 <td>{ profile.name }</td>
                                             </tr>
                                             <tr>
-                                                <th>Role</th>
-                                                <td>{ profile.role }</td>
-                                            </tr>
-                                            <tr>
                                                 <th>Age</th>
                                                 <td>{ profile.age }</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Mobile</th>
+                                                <td>{ profile.mobile }</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Role</th>
+                                                <td>{ profile.role }</td>
                                             </tr>
                                             <tr>
                                                 <th>Working Hours</th>

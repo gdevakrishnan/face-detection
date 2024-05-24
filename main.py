@@ -6,6 +6,8 @@ from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from flask_cors import CORS
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -15,10 +17,18 @@ load_dotenv()
 
 # MongoDB connection
 mongo_uri = os.getenv("MONGODB_URI")
-client = MongoClient(mongo_uri)
-db = client['Deploy']
+
+mongo_client = MongoClient(mongo_uri)
+db = mongo_client['Deploy']
 collection = db['attendance']
 workersCollection = db['workers']
+
+# Messenger
+twilio_mobile_number = os.getenv("TWILIO_MOBILE_NUMBER")
+twilio_sid = os.getenv("TWILIO_SID")
+twilio_auth_token = os.getenv("TWILIO_AUTH_TOKEN")
+
+messenger_client = Client(twilio_sid, twilio_auth_token)
 
 # Paths
 cascade_path = "haarcascade_frontalface_default.xml"
@@ -228,27 +238,41 @@ def check_face():
 def add_worker():
     data = request.json
     name = data.get('name')
-    role = data.get('role')
     age = data.get('age')
+    mobile = data.get('mobile')
+    role = data.get('role')
     workingHours = data.get('workingHours')
     salary = data.get('salary')
 
     # Insert data into MongoDB
-    attendance_record = {
+    worker_record = {
         "name": name,
-        "role": role,
         "age": age,
+        "role": role,
+        "mobile": mobile,
         "workingHours": workingHours,
         "salary": salary
     }
-    workersCollection.insert_one(attendance_record)
+    workersCollection.insert_one(worker_record)
+
+    # Attempt to send a welcome message using Twilio
+    try:
+        message = messenger_client.messages.create(
+            from_=twilio_mobile_number,
+            body=f"{name}, welcome to TechVaseegrah!",
+            to=mobile
+        )
+        response_message = "Worker data recorded successfully and welcome message sent."
+    except TwilioRestException as e:
+        response_message = f"Worker data recorded successfully but failed to send welcome message. Error: {e}"
 
     # Construct response JSON
     response_data = {
-        "message": "Worker data recorded successfully"
+        "message": response_message
     }
 
     return jsonify(response_data)
+
 
 # Function to find a worker by name
 @app.route('/find_worker', methods=['post'])

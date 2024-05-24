@@ -9,6 +9,7 @@ function Train() {
     "name": "",
     "role": "",
     "age": "",
+    "mobile": "",
     "workingHours": "",
     "salary": ""
   }
@@ -29,7 +30,6 @@ function Train() {
     const check = processText(newPerson.name);
     if (!check.hasSpecialCharacters) {
       setNewPerson({ ...newPerson, "name": check.processedText });
-      console.log(newPerson);
       giveTraining(newPerson)
         .then((response) => {
           setMsg(response.data.message);
@@ -61,23 +61,34 @@ function Train() {
           </div>
 
           <div className="form_group">
-            <label htmlFor="role">Job Role</label>
-            <input
-              type="text"
-              name="role"
-              id="role"
-              value={newPerson.role}
-              onChange={(e) => setNewPerson({ ...newPerson, [e.target.id]: e.target.value })}
-            />
-          </div>
-
-          <div className="form_group">
             <label htmlFor="age">Age</label>
             <input
               type="number"
               name="age"
               id="age"
               value={newPerson.age}
+              onChange={(e) => setNewPerson({ ...newPerson, [e.target.id]: e.target.value })}
+            />
+          </div>
+
+          <div className="form_group">
+            <label htmlFor="mobile">{"Mobile (add: +91)"}</label>
+            <input
+              type="text"
+              name="mobile"
+              id="mobile"
+              value={newPerson.mobile}
+              onChange={(e) => setNewPerson({ ...newPerson, [e.target.id]: e.target.value })}
+            />
+          </div>
+
+          <div className="form_group">
+            <label htmlFor="role">Job Role</label>
+            <input
+              type="text"
+              name="role"
+              id="role"
+              value={newPerson.role}
               onChange={(e) => setNewPerson({ ...newPerson, [e.target.id]: e.target.value })}
             />
           </div>
