@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 import cv2
 from bson import ObjectId
 import os
@@ -319,6 +321,48 @@ def find_worker():
         "status": 200
     }
     return jsonify(response_data)
+
+def send_worker_profiles():
+    # Fetch all workers from the collection
+    workers = workersCollection.find({})
+
+    for worker in workers:
+        # Extract mobile number and details from worker
+        mobile = worker.get('mobile')
+        name = worker.get('name')
+        age = worker.get('age')
+        role = worker.get('role')
+        workingHours = worker.get('workingHours')
+        salary = worker.get('salary')
+
+        # Construct the message
+        message_body = (
+            f"Profile for {name}:\n"
+            f"Name: {name}\n"
+            f"Age: {age}\n"
+            f"Role: {role}\n"
+            f"Working Hours: {workingHours}\n"
+            f"Salary: {salary}"
+        )
+
+        if mobile:
+            try:
+                # Send the message using Twilio
+                message = messenger_client.messages.create(
+                    from_=twilio_mobile_number,
+                    body=message_body,
+                    to=mobile
+                )
+                print(f"Message sent successfully to {name}: SID {message.sid}")
+            except TwilioRestException as e:
+                print(f"Failed to send message to {name}: {e}")
+
+# Schedule the task to run daily at 6 PM
+scheduler = BackgroundScheduler()
+trigger = CronTrigger(hour=18, minute=0)  # 6 PM
+scheduler.add_job(send_worker_profiles, trigger)
+scheduler.start()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
